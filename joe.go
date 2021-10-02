@@ -8,11 +8,16 @@ import (
   "os"
   "path"
   "path/filepath"
+  "regexp"
   "sort"
   "strings"
 )
 
-const joe string = `
+const (
+  gitignoreUrl = "https://github.com/github/gitignore/archive/master.zip"
+  version      = "1.0.1"
+  dataDir      = ".joe-data"
+  joe          = `
  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄ 
 ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌
  ▀▀▀▀▀█░█▀▀▀ ▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀▀▀ 
@@ -25,11 +30,10 @@ const joe string = `
 ▐░░░░░░░▌    ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌
  ▀▀▀▀▀▀▀      ▀▀▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀ 
 `
-const version string = "1.0.1"
-const gitignoreUrl = "https://github.com/github/gitignore/archive/master.zip"
-const dataDir string = ".joe-data"
+)
 
 var (
+  errLogger   = log.New(os.Stderr, "", 0)
   userHome, _ = os.UserHomeDir()
   dataPath    = path.Join(userHome, dataDir)
 )
@@ -65,12 +69,28 @@ func availableFiles() (a []string, err error) {
   return availableGitignores, nil
 }
 
+func search(arg string) {
+  gitignores, err := findGitignores()
+  if err != nil {
+    errLogger.Fatal(err)
+  }
+
+  for ig := range gitignores {
+    b, err := regexp.MatchString(arg, ig)
+    if err != nil {
+      errLogger.Println(err)
+    } else if b {
+      fmt.Println(ig)
+    }
+  }
+}
+
 func generate(args string) {
   names := strings.Split(args, ",")
 
   gitignores, err := findGitignores()
   if err != nil {
-    log.Fatal(err)
+    errLogger.Fatal(err)
   }
 
   notFound := []string{}
@@ -92,9 +112,8 @@ func generate(args string) {
   }
 
   if len(notFound) > 0 {
-    fmt.Printf("Unsupported files: %s\n", strings.Join(notFound, ", "))
-    fmt.Println("Run `joe ls` to see list of available gitignores.")
-    return
+    errLogger.Printf("Unsupported files: %s\n", strings.Join(notFound, ", "))
+    errLogger.Fatal("Run `joe ls` to see list of available gitignores.")
   }
   if len(output) > 0 {
     output = "#### joe made this: http://goel.io/joe\n" + output
@@ -109,6 +128,7 @@ func main() {
   app.Usage = "generate .gitignore files from the command line"
   app.UsageText = "joe command [arguments...]"
   app.Version = version
+  // app.EnableBashCompletion = true
   app.Commands = []cli.Command{
     {
       Name:    "ls",
@@ -117,12 +137,11 @@ func main() {
       Action: func(c *cli.Context) error {
         availableGitignores, err := availableFiles()
         if err != nil {
-          log.Fatal(err)
+          errLogger.Fatal(err)
           return err
         }
         fmt.Printf("%d supported .gitignore files:\n", len(availableGitignores))
         sort.Strings(availableGitignores)
-        // fmt.Printf("%s\n", strings.Join(availableGitignores, ", "))
         for _, gnore := range availableGitignores {
           fmt.Println(gnore)
         }
@@ -137,11 +156,11 @@ func main() {
         fmt.Println("Updating gitignore files..")
         err := RemoveContents(dataPath)
         if err != nil {
-          log.Fatal(err)
+          errLogger.Fatal(err)
         }
         err = DownloadFiles(gitignoreUrl, dataPath)
         if err != nil {
-          log.Fatal(err)
+          errLogger.Fatal(err)
           return err
         }
         return nil
@@ -156,6 +175,19 @@ func main() {
           cli.ShowAppHelp(c)
         } else {
           generate(c.Args()[0])
+        }
+        return nil
+      },
+    },
+    {
+      Name:    "s",
+      Aliases: []string{"search"},
+      Usage:   "search for gitignore files (one word per query)",
+      Action: func(c *cli.Context) error {
+        if c.NArg() != 1 {
+          cli.ShowAppHelp(c)
+        } else {
+          search(c.Args()[0])
         }
         return nil
       },

@@ -1,4 +1,4 @@
-module github.com/karan/joe
+module github.com/kendfss/joe
 
 go 1.17
 
