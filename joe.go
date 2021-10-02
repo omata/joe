@@ -2,7 +2,7 @@ package main
 
 import (
   "fmt"
-  "github.com/codegangsta/cli"
+  "github.com/urfave/cli"
   "io/ioutil"
   "log"
   "os"
@@ -25,11 +25,14 @@ const joe string = `
 ▐░░░░░░░▌    ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌
  ▀▀▀▀▀▀▀      ▀▀▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀ 
 `
-const version string = "1.0.0"
+const version string = "1.0.1"
 const gitignoreUrl = "https://github.com/github/gitignore/archive/master.zip"
 const dataDir string = ".joe-data"
 
-var dataPath = path.Join(os.Getenv("HOME"), dataDir)
+var (
+  userHome, _ = os.UserHomeDir()
+  dataPath    = path.Join(userHome, dataDir)
+)
 
 func findGitignores() (a map[string]string, err error) {
   _, err = ioutil.ReadDir(dataPath)
@@ -71,14 +74,14 @@ func generate(args string) {
   }
 
   notFound := []string{}
-  output := ""
+  output := "### Operating Systems ###\n# Darwin\n.DS_Store\n"
   for index, name := range names {
     if filepath, ok := gitignores[strings.ToLower(name)]; ok {
       bytes, err := ioutil.ReadFile(filepath)
       if err == nil {
         output += "\n#### " + name + " ####\n"
         output += string(bytes)
-        if index < len(names) - 1 {
+        if index < len(names)-1 {
           output += "\n"
         }
         continue
@@ -91,12 +94,13 @@ func generate(args string) {
   if len(notFound) > 0 {
     fmt.Printf("Unsupported files: %s\n", strings.Join(notFound, ", "))
     fmt.Println("Run `joe ls` to see list of available gitignores.")
-    output = ""
+    return
   }
   if len(output) > 0 {
     output = "#### joe made this: http://goel.io/joe\n" + output
   }
-  fmt.Print(output)
+
+  fmt.Println(output)
 }
 
 func main() {
@@ -118,7 +122,10 @@ func main() {
         }
         fmt.Printf("%d supported .gitignore files:\n", len(availableGitignores))
         sort.Strings(availableGitignores)
-        fmt.Printf("%s\n", strings.Join(availableGitignores, ", "))
+        // fmt.Printf("%s\n", strings.Join(availableGitignores, ", "))
+        for _, gnore := range availableGitignores {
+          fmt.Println(gnore)
+        }
         return nil
       },
     },

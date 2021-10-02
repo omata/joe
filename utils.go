@@ -47,7 +47,7 @@ func unzip(archive, target string) (err error) {
 	return nil
 }
 
-func DownloadFiles(url string, dataPath string) (err error) {
+func DownloadFiles(url, dataPath string) (err error) {
 	archivePath := path.Join("/tmp", "master.zip")
 
 	// Create the file
