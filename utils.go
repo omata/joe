@@ -2,12 +2,13 @@ package main
 
 import (
 	"archive/zip"
-	"github.com/termie/go-shutil"
 	"io"
 	"net/http"
 	"os"
 	"path"
 	"path/filepath"
+
+	"github.com/termie/go-shutil"
 )
 
 func unzip(archive, target string) (err error) {
@@ -76,7 +77,7 @@ func DownloadFiles(url, dataPath string) (err error) {
 		return err
 	}
 
-	err = shutil.CopyTree(path.Join("/tmp", "gitignore-master"), dataPath, nil)
+	err = shutil.CopyTree(path.Join("/tmp", "gitignore-main"), dataPath, nil)
 	if err != nil {
 		return err
 	}
