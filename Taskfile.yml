@@ -1,0 +1,115 @@
+# https://taskfile.dev
+
+version: '3'
+
+silent: true
+
+tasks:
+  build:windows:386:
+    desc: Build a 32 bit version of joe for Windows.
+    cmds:
+      - echo "--->  Building 32 bits Windows binary..."
+      - go build -o build/joe-x86.exe joe.go utils.go
+      - echo "Done."
+    sources:
+      - joe.go
+      - utils.go
+    generates:
+      - build/joe-x86.exe
+    env:
+      GOOS: windows
+      GOARCH: 386
+
+  build:windows:amd64:
+    desc: Build a 64 bit version of joe for Windows.
+    cmds:
+      - echo "--->  Building 64 bits Windows binary..."
+      - go build -o build/joe.exe joe.go utils.go
+      - echo "Done."
+    sources:
+      - joe.go
+      - utils.go
+    generates:
+      - build/joe.exe
+    env:
+      GOOS: windows
+      GOARCH: amd64
+
+  build:linux:386:
+    desc: Build a 32 bit version of joe for Linux.
+    cmds:
+      - echo "--->  Building 32 bits Linux binary..."
+      - go build -o build/joe-x86 joe.go utils.go
+      - echo "Done."
+    sources:
+      - joe.go
+      - utils.go
+    generates:
+      - build/joe-x86
+    env:
+      GOOS: linux
+      GOARCH: 386
+
+  build:linux:amd64:
+    desc: Build a 64 bit version of joe for Linux.
+    cmds:
+      - echo "--->  Building 64 bits Linux binary..."
+      - go build -o build/joe joe.go utils.go
+      - echo "Done."
+    sources:
+      - joe.go
+      - utils.go
+    generates:
+      - build/joe
+    env:
+      GOOS: linux
+      GOARCH: amd64
+
+  build:darwin:
+    desc: Build a 64 bit version of joe MacOs.
+    cmds:
+      - echo "--->  Building 64 bits MacOS binary..."
+      - go build -o build/joe-darwin joe.go utils.go
+      - echo "Done."
+    sources:
+      - joe.go
+      - utils.go
+    generates:
+      - build/joe-darwin
+    env:
+      GOOS: darwin
+      GOARCH: amd64
+
+  build:all:
+    desc: Build binaries for all architecrture and platforms.
+    cmds:
+      - task: build:windows:386
+      - task: build:windows:amd64
+      - task: build:linux:386
+      - task: build:linux:amd64
+      - task: build:darwin
+      - task: compress
+
+  clean:
+    desc: Clean up the environment.
+    cmds:
+      - rm -rf build
+      - rm -rf pkg
+
+  compress:
+    desc: Compress all generated binaries with zstd algorithm.
+    cmds:
+      - test -d pkg || mkdir pkg
+      - for joebin in $(ls build) ; do zstd --ultra -22 "build/${joebin}" -f -o pkg/"${joebin}.zst"; done
+    sources:
+      - build/joe-x86.exe
+      - build/joe.exe
+      - build/joe-x86
+      - build/joe
+      - build/joe-darwin
+    generates:
+      - pkg/joe-x86.exe.zst
+      - pkg/joe.exe.zst
+      - pkg/joe-x86.zst
+      - pkg/joe.zst
+      - pkg/joe-darwin.zst
