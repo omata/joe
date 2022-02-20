@@ -23,14 +23,14 @@ After install, make sure to run `joe u`. This will download all `.gitignore` fil
 
 `joe` is available for OSX (macOS), Linux and Windows.
 
-Download the latest binary from the [Releases page](https://github.com/karan/joe/releases). It's the easiest way to get started with `joe`.
+Download the latest binary from the [Releases page](https://github.com/omata/joe/releases). It's the easiest way to get started with `joe`.
 
 Make sure to add the location of the binary to your `$PATH`.
 
 ### Option 2: From source (w/ GoMod Support)
 
 ```bash
-git clone git@github.com:kendfss/joe.git
+git clone git@github.com:omata/joe.git
 cd joe
 go install
 joe u
@@ -39,7 +39,7 @@ joe u
 ### Option 3: From source (w/o GoMod Support)
 This is the original installer from [Karan](https://github.com/karan)'s repo. I've updated it, but it's obsolete now that go uses Modules for package management.
 ```bash
-git clone git@github.com:kendfss/joe.git
+git clone git@github.com:omata/joe.git
 cd joe/
 chmod +x tool.sh
 ./tool.sh build
@@ -106,9 +106,9 @@ joe ls    # OR `joe list`
 ```bash
 joe s py # or `joe search`
 # prints all languages whose names contain "py"
-joe s "^py" 
+joe s "^py"
 # prints all languages whose names start with "py"
-joe s py$ 
+joe s py$
 # prints all languages whose names end with "py"
 ```
 
