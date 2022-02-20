@@ -37,19 +37,20 @@ joe u
 ```
 
 ### Option 3: From source (w/o GoMod Support)
-This is the original installer from [Karan](https://github.com/karan)'s repo. I've updated it, but it's obsolete now that go uses Modules for package management.
+
+It uses the tool [TaskFile](https://taskfile.dev), so you must to install it before take this aproach.
+
 ```bash
 git clone git@github.com:omata/joe.git
 cd joe/
-chmod +x tool.sh
-./tool.sh build
+task build:[os]:[arch]
 ```
 
 ## Usage
 
 ### Commands:
 
-```
+```text
 ls | list       list all available files
 u | update      update all available gitignore files
 g | generate    generate gitignore files
@@ -114,7 +115,259 @@ joe s py$
 
 Output:
 
-> actionscript, ada, agda, android, anjuta, appceleratortitanium, archives, archlinuxpackages, autotools, bricxcc, c, c++, cakephp, cfwheels, chefcookbook, clojure, cloud9, cmake, codeigniter, codekit, commonlisp, composer, concrete5, coq, craftcms, cvs, dart, darteditor, delphi, dm, dreamweaver, drupal, eagle, eclipse, eiffelstudio, elisp, elixir, emacs, ensime, episerver, erlang, espresso, expressionengine, extjs, fancy, finale, flexbuilder, forcedotcom, fortran, fuelphp, gcov, gitbook, go, gradle, grails, gwt, haskell, idris, igorpro, ipythonnotebook, java, jboss, jdeveloper, jekyll, jetbrains, joomla, jython, kate, kdevelop4, kohana, labview, laravel, lazarus, leiningen, lemonstand, libreoffice, lilypond, linux, lithium, lua, lyx, magento, matlab, maven, mercurial, mercury, metaprogrammingsystem, meteor, microsoftoffice, modelsim, momentics, monodevelop, nanoc, netbeans, nim, ninja, node, notepadpp, objective-c, ocaml, opa, opencart, oracleforms, osx, packer, perl, phalcon, playframework, plone, prestashop, processing, python, qooxdoo, qt, r, rails, redcar, redis, rhodesrhomobile, ros, ruby, rust, sass, sbt, scala, scons, scrivener, sdcc, seamgen, sketchup, slickedit, stella, sublimetext, sugarcrm, svn, swift, symfony, symphonycms, tags, tex, textmate, textpattern, tortoisegit, turbogears2, typo3, umbraco, unity, vagrant, vim, virtualenv, visualstudio, vvvv, waf, webmethods, windows, wordpress, xcode, xilinxise, xojo, yeoman, yii, zendframework, zephir
+```text
+250 supported .gitignore files:
+actionscript
+ada
+agda
+al
+altiumdesigner
+android
+anjuta
+ansible
+appceleratortitanium
+appengine
+archives
+archlinuxpackages
+atmelstudio
+autoit
+autotools
+b4x
+backup
+bazaar
+bazel
+beef
+bitrix
+bricxcc
+c
+c++
+cakephp
+calabash
+cdk
+cfwheels
+chefcookbook
+clojure
+cloud9
+cmake
+codeigniter
+codekit
+codesniffer
+commonlisp
+composer
+concrete5
+coq
+cordova
+core
+craftcms
+cuda
+cvs
+d
+dart
+darteditor
+delphi
+diff
+dm
+dreamweaver
+dropbox
+drupal
+drupal7
+eagle
+eclipse
+eiffelstudio
+elisp
+elixir
+elm
+emacs
+ensime
+episerver
+erlang
+esp-idf
+espresso
+exercism
+expressionengine
+extjs
+fancy
+finale
+flaxengine
+flexbuilder
+forcedotcom
+fortran
+fuelphp
+gcov
+gitbook
+gnomeshellextension
+go
+go.allowlist
+godot
+gpg
+gradle
+grails
+gretl
+gwt
+haskell
+hugo
+iar_ewarm
+idris
+igorpro
+images
+inforcms
+java
+jboss
+jboss4
+jboss6
+jdeveloper
+jekyll
+jenkins_home
+jenv
+jetbrains
+jigsaw
+joomla
+julia
+jupyternotebooks
+kate
+kdevelop4
+kentico
+kicad
+kohana
+kotlin
+labview
+laravel
+lazarus
+leiningen
+lemonstand
+lensstudio
+libreoffice
+lilypond
+linux
+lithium
+logtalk
+lua
+lyx
+macos
+magento
+magento1
+magento2
+matlab
+maven
+mercurial
+mercury
+metals
+metaprogrammingsystem
+meteor
+microsoftoffice
+modelsim
+momentics
+monodevelop
+nanoc
+nasaspecsintact
+netbeans
+nikola
+nim
+ninja
+nix
+node
+notepadpp
+nwjs
+objective-c
+ocaml
+octave
+opa
+opencart
+openssl
+oracleforms
+otto
+packer
+patch
+perl
+phalcon
+phoenix
+pimcore
+playframework
+plone
+prestashop
+processing
+psoccreator
+puppet
+purescript
+putty
+python
+qooxdoo
+qt
+r
+racket
+rails
+raku
+red
+redcar
+redis
+rhodesrhomobile
+ros
+ros2
+ruby
+rust
+sam
+sass
+sbt
+scala
+scheme
+scons
+scrivener
+sdcc
+seamgen
+sketchup
+slickedit
+smalltalk
+snap
+spfx
+splunk
+stata
+stella
+strapi
+sublimetext
+sugarcrm
+svn
+swift
+symfony
+symphonycms
+syncthing
+synopsysvcs
+tags
+terraform
+tex
+textmate
+textpattern
+thinkphp
+toit
+tortoisegit
+turbogears2
+twincat3
+typo3
+umbraco
+unity
+unrealengine
+uvision
+v
+vagrant
+vim
+virtualenv
+virtuoso
+visualstudio
+visualstudiocode
+vue
+vvvv
+waf
+webmethods
+windows
+wordpress
+xcode
+xilinx
+xilinxise
+xojo
+yeoman
+yii
+zendframework
+zephir
+```
 
 ### BONUS ROUND: Alternate version control software
 
@@ -128,35 +381,20 @@ joe g java > .hgignore
 
 #### Bug Reports & Feature Requests
 
-Please use the [issue tracker](https://github.com/karan/joe/issues) to report any bugs or file feature requests.
+Please use the [issue tracker](https://github.com/omata/joe/issues) to report any bugs or file feature requests.
 
 #### Developing
 
 PRs are welcome. To begin developing, do this:
 
 ```bash
-git clone git@github.com:karan/joe.git
+git clone git@github.com:omata/joe.git
 cd joe/
 go run *.go
 ```
 
-#### `tool.sh`
-
-This is a handy script that automates a lot of developing steps.
-
-
-```bash
-USAGE:
-    $ $tool [-h|--help] COMMAND
-
-  EXAMPLES:
-    $ $tool deps      Install dependencies for joe
-    $ $tool build     Build a binary
-    $ $tool run       Build and run the binary
-```
-
-
 ## TODO
+
 Avoid writing duplicates to output
 add an `o` option for writing output directly file
 - new structure
