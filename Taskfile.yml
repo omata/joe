@@ -1,0 +1,170 @@
+# https://taskfile.dev
+
+version: '3'
+
+silent: true
+
+tasks:
+  build:windows:386:
+    desc: Build a X86 version of joe for Windows.
+    cmds:
+      - echo "--->  Building X86 Windows binary..."
+      - go build -o build/joe-x86.exe joe.go utils.go
+      - echo "Done."
+    sources:
+      - joe.go
+      - utils.go
+    generates:
+      - build/joe-x86.exe
+    env:
+      GOOS: windows
+      GOARCH: 386
+
+  build:windows:amd64:
+    desc: Build a AMD64 version of joe for Windows.
+    cmds:
+      - echo "--->  Building AMD64 Windows binary..."
+      - go build -o build/joe-amd64.exe joe.go utils.go
+      - echo "Done."
+    sources:
+      - joe.go
+      - utils.go
+    generates:
+      - build/joe-amd64.exe
+    env:
+      GOOS: windows
+      GOARCH: amd64
+
+  build:linux:386:
+    desc: Build X86 version of joe for Linux.
+    cmds:
+      - echo "--->  Building X86 Linux binary..."
+      - go build -o build/joe-x86 joe.go utils.go
+      - echo "Done."
+    sources:
+      - joe.go
+      - utils.go
+    generates:
+      - build/joe-x86
+    env:
+      GOOS: linux
+      GOARCH: 386
+
+  build:linux:arm:
+    desc: Build ARM version of joe for Linux.
+    cmds:
+      - echo "--->  Building ARM Linux binary..."
+      - go build -o build/joe-arm joe.go utils.go
+      - echo "Done."
+    sources:
+      - joe.go
+      - utils.go
+    generates:
+      - build/joe-arm
+    env:
+      GOOS: linux
+      GOARCH: arm
+
+  build:linux:amd64:
+    desc: Build AMD64 version of joe for Linux.
+    cmds:
+      - echo "--->  Building AMD64 Linux binary..."
+      - go build -o build/joe-amd64 joe.go utils.go
+      - echo "Done."
+    sources:
+      - joe.go
+      - utils.go
+    generates:
+      - build/joe-amd64
+    env:
+      GOOS: linux
+      GOARCH: amd64
+
+  build:linux:arm64:
+    desc: Build ARM64 version of joe for Linux.
+    cmds:
+      - echo "--->  Building ARM64 Linux binary..."
+      - go build -o build/joe-arm64 joe.go utils.go
+      - echo "Done."
+    sources:
+      - joe.go
+      - utils.go
+    generates:
+      - build/joe-amd64
+    env:
+      GOOS: linux
+      GOARCH: arm64
+
+  build:darwin:amd64:
+    desc: Build a AMD64 version of joe for MacOS.
+    cmds:
+      - echo "--->  Building AMD64 MacOS AMD64 binary..."
+      - go build -o build/joe-darwin-amd64 joe.go utils.go
+      - echo "Done."
+    sources:
+      - joe.go
+      - utils.go
+    generates:
+      - build/joe-darwin-amd64
+    env:
+      GOOS: darwin
+      GOARCH: amd64
+
+  build:darwin:arm64:
+    desc: Build a 64 bit ARM64 version of joe for MacOS.
+    cmds:
+      - echo "--->  Building ARM64 MacOS ARM64 binary..."
+      - go build -o build/joe-darwin-arm64 joe.go utils.go
+      - echo "Done."
+    sources:
+      - joe.go
+      - utils.go
+    generates:
+      - build/joe-darwin-arm64
+    env:
+      GOOS: darwin
+      GOARCH: arm64
+
+  build:all:
+    desc: Build binaries for all architecrture and platforms.
+    cmds:
+      - task: build:windows:386
+      - task: build:windows:amd64
+      - task: build:linux:386
+      - task: build:linux:arm
+      - task: build:linux:amd64
+      - task: build:linux:arm64
+      - task: build:darwin:amd64
+      - task: build:darwin:arm64
+      - task: compress
+
+  clean:
+    desc: Clean up the environment.
+    cmds:
+      - rm -rf build
+      - rm -rf pkg
+      - rm -rf .task
+
+  compress:
+    desc: Compress all generated binaries with zstd algorithm.
+    cmds:
+      - test -d pkg || mkdir pkg
+      - for joebin in $(ls build) ; do zstd --ultra -22 "build/${joebin}" -f -o pkg/"${joebin}.zst"; done
+    sources:
+      - build/joe-x86.exe
+      - build/joe-amd64.exe
+      - build/joe-x86
+      - build/joe-arm
+      - build/joe-amd64
+      - build/joe-amd64
+      - build/joe-darwin-amd64
+      - build/joe-darwin-arm64
+    generates:
+      - pkg/joe-x86.exe
+      - pkg/joe-amd64.exe
+      - pkg/joe-x86
+      - pkg/joe-arm
+      - pkg/joe-amd64
+      - pkg/joe-amd64
+      - pkg/joe-darwin-amd64
+      - pkg/joe-darwin-arm64
