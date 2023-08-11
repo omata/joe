@@ -4,6 +4,9 @@ version: '3'
 
 silent: true
 
+env:
+  GOPROXY: direct
+
 tasks:
   build:windows:386:
     desc: Build a X86 version of joe for Windows.
