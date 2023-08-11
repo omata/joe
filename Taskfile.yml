@@ -4,18 +4,20 @@ version: '3'
 
 silent: true
 
+env:
+  GOPROXY: direct
+
 tasks:
   build:windows:386:
     desc: Build a X86 version of joe for Windows.
     cmds:
       - echo "--->  Building X86 Windows binary..."
-      - go build -o build/joe-x86.exe joe.go utils.go
-      - echo "Done."
+      - go build -ldflags "-s -w" -o build/win-x86/joe.exe joe.go utils.go && echo -e "--->  Build Done!" || echo -e "--->  There was a problem."
     sources:
       - joe.go
       - utils.go
     generates:
-      - build/joe-x86.exe
+      - build/win-x86/joe.exe
     env:
       GOOS: windows
       GOARCH: 386
@@ -24,13 +26,12 @@ tasks:
     desc: Build a AMD64 version of joe for Windows.
     cmds:
       - echo "--->  Building AMD64 Windows binary..."
-      - go build -o build/joe-amd64.exe joe.go utils.go
-      - echo "Done."
+      - go build -ldflags "-s -w" -o build/win-amd64/joe.exe joe.go utils.go && echo -e "--->  Build Done!" || echo -e "--->  There was a problem."
     sources:
       - joe.go
       - utils.go
     generates:
-      - build/joe-amd64.exe
+      - build/win-amd64/joe.exe
     env:
       GOOS: windows
       GOARCH: amd64
@@ -39,13 +40,12 @@ tasks:
     desc: Build X86 version of joe for Linux.
     cmds:
       - echo "--->  Building X86 Linux binary..."
-      - go build -o build/joe-x86 joe.go utils.go
-      - echo "Done."
+      - go build -ldflags "-s -w" -o build/linux-x86/joe joe.go utils.go && echo -e "--->  Build Done!" || echo -e "--->  There was a problem."
     sources:
       - joe.go
       - utils.go
     generates:
-      - build/joe-x86
+      - build/linux-x86/joe
     env:
       GOOS: linux
       GOARCH: 386
@@ -54,13 +54,12 @@ tasks:
     desc: Build ARM version of joe for Linux.
     cmds:
       - echo "--->  Building ARM Linux binary..."
-      - go build -o build/joe-arm joe.go utils.go
-      - echo "Done."
+      - go build -ldflags "-s -w" -o build/linux-arm/joe joe.go utils.go && echo -e "--->  Build Done!" || echo -e "--->  There was a problem."
     sources:
       - joe.go
       - utils.go
     generates:
-      - build/joe-arm
+      - build/linux-arm/joe
     env:
       GOOS: linux
       GOARCH: arm
@@ -69,13 +68,12 @@ tasks:
     desc: Build AMD64 version of joe for Linux.
     cmds:
       - echo "--->  Building AMD64 Linux binary..."
-      - go build -o build/joe-amd64 joe.go utils.go
-      - echo "Done."
+      - go build -ldflags "-s -w" -o build/linux-amd64/joe joe.go utils.go && echo -e "--->  Build Done!" || echo -e "--->  There was a problem."
     sources:
       - joe.go
       - utils.go
     generates:
-      - build/joe-amd64
+      - build/linux-amd64/joe
     env:
       GOOS: linux
       GOARCH: amd64
@@ -84,13 +82,12 @@ tasks:
     desc: Build ARM64 version of joe for Linux.
     cmds:
       - echo "--->  Building ARM64 Linux binary..."
-      - go build -o build/joe-arm64 joe.go utils.go
-      - echo "Done."
+      - go build -ldflags "-s -w" -o build/linux-arm64/joe joe.go utils.go && echo -e "--->  Build Done!" || echo -e "--->  There was a problem."
     sources:
       - joe.go
       - utils.go
     generates:
-      - build/joe-amd64
+      - build/linux-arm64/joe
     env:
       GOOS: linux
       GOARCH: arm64
@@ -99,13 +96,12 @@ tasks:
     desc: Build a AMD64 version of joe for MacOS.
     cmds:
       - echo "--->  Building AMD64 MacOS AMD64 binary..."
-      - go build -o build/joe-darwin-amd64 joe.go utils.go
-      - echo "Done."
+      - go build -ldflags "-s -w" -o build/darwin-amd64/joe joe.go utils.go && echo -e "--->  Build Done!" || echo -e "--->  There was a problem."
     sources:
       - joe.go
       - utils.go
     generates:
-      - build/joe-darwin-amd64
+      - build/darwin-amd64/joe
     env:
       GOOS: darwin
       GOARCH: amd64
@@ -114,13 +110,12 @@ tasks:
     desc: Build a 64 bit ARM64 version of joe for MacOS.
     cmds:
       - echo "--->  Building ARM64 MacOS ARM64 binary..."
-      - go build -o build/joe-darwin-arm64 joe.go utils.go
-      - echo "Done."
+      - go build -ldflags "-s -w" -o build/darwin-arm64/joe joe.go utils.go && echo -e "--->  Build Done!" || echo -e "--->  There was a problem."
     sources:
       - joe.go
       - utils.go
     generates:
-      - build/joe-darwin-arm64
+      - build/darwin-arm64/joe
     env:
       GOOS: darwin
       GOARCH: arm64
@@ -128,6 +123,7 @@ tasks:
   build:all:
     desc: Build binaries for all architecrture and platforms.
     cmds:
+      - task: clean
       - task: build:windows:386
       - task: build:windows:amd64
       - task: build:linux:386
@@ -149,22 +145,22 @@ tasks:
     desc: Compress all generated binaries with zstd algorithm.
     cmds:
       - test -d pkg || mkdir pkg
-      - for joebin in $(ls build) ; do zstd --ultra -22 "build/${joebin}" -f -o pkg/"${joebin}.zst"; done
+      - for joebin in $(ls build) ; do tar cfv - ./build/${joebin} | zstd --ultra -22 - -f -o pkg/"${joebin}.tar.zst"; done
     sources:
-      - build/joe-x86.exe
-      - build/joe-amd64.exe
-      - build/joe-x86
-      - build/joe-arm
-      - build/joe-amd64
-      - build/joe-amd64
-      - build/joe-darwin-amd64
-      - build/joe-darwin-arm64
+      - build/win-x86/joe.exe
+      - build/win-amd64/joe.exe
+      - build/linux-x86/joe
+      - build/linux-arm/joe
+      - build/linux-amd64/joe
+      - build/linux-arm64/joe
+      - build/darwin-amd64/joe
+      - build/darwin-arm64/joe
     generates:
-      - pkg/joe-x86.exe
-      - pkg/joe-amd64.exe
-      - pkg/joe-x86
-      - pkg/joe-arm
-      - pkg/joe-amd64
-      - pkg/joe-amd64
-      - pkg/joe-darwin-amd64
-      - pkg/joe-darwin-arm64
+      - pkg/win-x86.tar.zst
+      - pkg/win-amd64.tar.zst
+      - pkg/linux-x86.tar.zst
+      - pkg/linux-arm.tar.zst
+      - pkg/linux-amd64.tar.zst
+      - pkg/linux-arm64.tar.zst
+      - pkg/darwin-amd64.tar.zst
+      - pkg/darwin-arm64.tar.zst

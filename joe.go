@@ -16,20 +16,15 @@ import (
 
 const (
 	gitignoreUrl = "https://github.com/github/gitignore/archive/main.zip"
-	version      = "1.0.3.1"
+	version      = "1.0.4"
 	dataDir      = ".joe-data"
 	joe          = `
- ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄
-▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌
- ▀▀▀▀▀█░█▀▀▀ ▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀▀▀
-      ▐░▌    ▐░▌       ▐░▌▐░▌
-      ▐░▌    ▐░▌       ▐░▌▐░█▄▄▄▄▄▄▄▄▄
-      ▐░▌    ▐░▌       ▐░▌▐░░░░░░░░░░░▌
-      ▐░▌    ▐░▌       ▐░▌▐░█▀▀▀▀▀▀▀▀▀
-      ▐░▌    ▐░▌       ▐░▌▐░▌
- ▄▄▄▄▄█░▌    ▐░█▄▄▄▄▄▄▄█░▌▐░█▄▄▄▄▄▄▄▄▄
-▐░░░░░░░▌    ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌
- ▀▀▀▀▀▀▀      ▀▀▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀
+       ______  ______
+      / / __ \/ ____/
+ __  / / / / / __/
+/ /_/ / /_/ / /___
+\____/\____/_____/
+
 `
 )
 
@@ -134,7 +129,7 @@ func main() {
 		{
 			Name:    "ls",
 			Aliases: []string{"list"},
-			Usage:   "list all available files",
+			Usage:   "List all available files",
 			Action: func(c *cli.Context) error {
 				availableGitignores, err := availableFiles()
 				if err != nil {
@@ -152,7 +147,7 @@ func main() {
 		{
 			Name:    "u",
 			Aliases: []string{"update"},
-			Usage:   "update all available gitignore files",
+			Usage:   "Update all available gitignore files",
 			Action: func(c *cli.Context) error {
 				fmt.Println("Updating gitignore files..")
 				err := RemoveContents(dataPath)
@@ -170,7 +165,7 @@ func main() {
 		{
 			Name:    "g",
 			Aliases: []string{"generate"},
-			Usage:   "generate gitignore files",
+			Usage:   "Generate gitignore files",
 			Action: func(c *cli.Context) error {
 				if c.NArg() != 1 {
 					cli.ShowAppHelp(c)
@@ -183,7 +178,7 @@ func main() {
 		{
 			Name:    "s",
 			Aliases: []string{"search"},
-			Usage:   "search for gitignore files (one word per query)",
+			Usage:   "Search for gitignore files (one word per query)",
 			Action: func(c *cli.Context) error {
 				if c.NArg() != 1 {
 					cli.ShowAppHelp(c)
