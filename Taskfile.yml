@@ -145,22 +145,22 @@ tasks:
     desc: Compress all generated binaries with zstd algorithm.
     cmds:
       - test -d pkg || mkdir pkg
-      - for joebin in $(ls build) ; do zstd --ultra -22 "build/${joebin}" -f -o pkg/"${joebin}.zst"; done
+      - for joebin in $(ls build) ; do tar cfv - ./build/${joebin} | zstd --ultra -22 - -f -o pkg/"${joebin}.tar.zst"; done
     sources:
-      - build/joe-x86.exe
-      - build/joe-amd64.exe
-      - build/joe-x86
-      - build/joe-arm
-      - build/joe-amd64
-      - build/joe-amd64
-      - build/joe-darwin-amd64
-      - build/joe-darwin-arm64
+      - build/win-x86/joe.exe
+      - build/win-amd64/joe.exe
+      - build/linux-x86/joe
+      - build/linux-arm/joe
+      - build/linux-amd64/joe
+      - build/linux-arm64/joe
+      - build/darwin-amd64/joe
+      - build/darwin-arm64/joe
     generates:
-      - pkg/joe-x86.exe
-      - pkg/joe-amd64.exe
-      - pkg/joe-x86
-      - pkg/joe-arm
-      - pkg/joe-amd64
-      - pkg/joe-amd64
-      - pkg/joe-darwin-amd64
-      - pkg/joe-darwin-arm64
+      - pkg/win-x86.tar.zst
+      - pkg/win-amd64.tar.zst
+      - pkg/linux-x86.tar.zst
+      - pkg/linux-arm.tar.zst
+      - pkg/linux-amd64.tar.zst
+      - pkg/linux-arm64.tar.zst
+      - pkg/darwin-amd64.tar.zst
+      - pkg/darwin-arm64.tar.zst
