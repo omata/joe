@@ -123,6 +123,7 @@ tasks:
   build:all:
     desc: Build binaries for all architecrture and platforms.
     cmds:
+      - task: clean
       - task: build:windows:386
       - task: build:windows:amd64
       - task: build:linux:386
